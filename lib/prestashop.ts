@@ -125,10 +125,13 @@ export function setXmlField(xml: string, field: string, value: string): string {
   return xml.replace(re, `<${field}><![CDATA[${value}]]></${field}>`);
 }
 
-/** PrestaShop stores dates in shop-local time without a zone. */
+/** PrestaShop stores dates in shop-local time without a zone: "YYYY-MM-DD HH:MM:SS". */
 export function psDate(d: Date, tz = process.env.PS_TIMEZONE ?? "Europe/Tbilisi") {
-  const parts = new Intl.DateTimeFormat("sv-SE", {
-    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-  }).format(d);
-  return parts.replace("T", " ");
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
+    }).formatToParts(d).map((x) => [x.type, x.value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }

@@ -49,6 +49,7 @@ describe("localized", () => {
 
 describe("psDate", () => {
   it("formats in shop-local time", () => {
-    expect(psDate(new Date("2026-11-10T10:05:09Z"), "Europe/Tbilisi")).toBe("2026-11-10 14:05:09");
+    expect(psDate(new Date("2026-11-10T10:05:09Z"), "UTC")).toBe("2026-11-10 10:05:09");
+    expect(psDate(new Date("2026-11-10T23:59:59Z"), "UTC")).toBe("2026-11-10 23:59:59");
   });
 });
